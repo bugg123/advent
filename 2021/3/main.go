@@ -14,13 +14,56 @@ type TrieNode struct {
 
 var root *TrieNode
 
+func main() {
+	part1()
+	fmt.Println()
+	part2()
+}
+
+func part1() {
+	count := make([]int, 12)
+	for _, b := range input {
+		for i, r := range b {
+			if r == '1' {
+				count[i]++
+			} else {
+				count[i]--
+			}
+		}
+	}
+	fmt.Printf("Count: %v\n", count)
+	var pos float64 = 0
+	var neg float64 = 0
+	for i, c := range count {
+		if c < 0 {
+			neg += math.Exp2(float64(len(count) - 1 - i))
+		} else {
+			pos += math.Exp2(float64(len(count) - 1 - i))
+		}
+	}
+	fmt.Printf("Pos: %v Neg:%v\n", pos, neg)
+	fmt.Printf("Total:%v\n", int(pos*neg))
+}
+
+func part2() {
+	root = &TrieNode{}
+	for _, b := range input {
+		addToTrie(b, root)
+	}
+	fmt.Printf("Input Len: %d\n", len(input))
+	fmt.Printf("Count: %d\n", root.Count)
+	max := findMax(root)
+	min := findMin(root)
+	fmt.Printf("Max: %v, Dec: %d\n", max, getDecimalFromBinary(max))
+	fmt.Printf("Min: %v, Dec: %d\n", min, getDecimalFromBinary(min))
+	fmt.Printf("Answer: %d\n", getDecimalFromBinary(min) * getDecimalFromBinary(max))
+}
+
+
 func addToTrie(input string, node *TrieNode) {
 	if len(input) == 0 {
 		node.leaf = true
 		return
-	}
-	if node == nil {
-		node = root
 	}
 	val := input[0]
 	node.Count++
@@ -71,11 +114,6 @@ func findMin(node *TrieNode) string {
 	}
 }
 
-func main() {
-	part1()
-	fmt.Println()
-	part2()
-}
 
 func getDecimalFromBinary(input string) int {
 	res := 0
@@ -87,44 +125,6 @@ func getDecimalFromBinary(input string) int {
 	return res
 }
 
-func part2() {
-	root = &TrieNode{}
-	for _, b := range input {
-		addToTrie(b, root)
-	}
-	fmt.Printf("Input Len: %d\n", len(input))
-	fmt.Printf("Count: %d\n", root.Count)
-	max := findMax(root)
-	min := findMin(root)
-	fmt.Printf("Max: %v, Dec: %d\n", max, getDecimalFromBinary(max))
-	fmt.Printf("Min: %v, Dec: %d\n", min, getDecimalFromBinary(min))
-	fmt.Printf("Answer: %d\n", getDecimalFromBinary(min) * getDecimalFromBinary(max))
-}
-
-func part1() {
-	count := make([]int, 12)
-	for _, b := range input {
-		for i, r := range b {
-			if r == '1' {
-				count[i]++
-			} else {
-				count[i]--
-			}
-		}
-	}
-	fmt.Printf("Count: %v\n", count)
-	var pos float64 = 0
-	var neg float64 = 0
-	for i, c := range count {
-		if c < 0 {
-			neg += math.Exp2(float64(len(count) - 1 - i))
-		} else {
-			pos += math.Exp2(float64(len(count) - 1 - i))
-		}
-	}
-	fmt.Printf("Pos: %v Neg:%v\n", pos, neg)
-	fmt.Printf("Total:%v\n", int(pos*neg))
-}
 
 var input = []string{
 	"011111111100",

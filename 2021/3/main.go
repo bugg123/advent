@@ -5,14 +5,14 @@ import (
 	"math"
 )
 
-type TrieNode struct {
+type TreeNode struct {
 	Count int
-	zero  *TrieNode
-	one   *TrieNode
+	zero  *TreeNode
+	one   *TreeNode
 	leaf  bool
 }
 
-var root *TrieNode
+var root *TreeNode
 
 func main() {
 	part1()
@@ -46,9 +46,9 @@ func part1() {
 }
 
 func part2() {
-	root = &TrieNode{}
+	root = &TreeNode{}
 	for _, b := range input {
-		addToTrie(b, root)
+		addToTree(b, root)
 	}
 	fmt.Printf("Input Len: %d\n", len(input))
 	fmt.Printf("Count: %d\n", root.Count)
@@ -60,7 +60,7 @@ func part2() {
 }
 
 
-func addToTrie(input string, node *TrieNode) {
+func addToTree(input string, node *TreeNode) {
 	if len(input) == 0 {
 		node.leaf = true
 		return
@@ -69,18 +69,18 @@ func addToTrie(input string, node *TrieNode) {
 	node.Count++
 	if val == '0' {
 		if node.zero == nil {
-			node.zero = &TrieNode{}
+			node.zero = &TreeNode{}
 		}
-		addToTrie(input[1:], node.zero)
+		addToTree(input[1:], node.zero)
 	} else {
 		if node.one == nil {
-			node.one = &TrieNode{}
+			node.one = &TreeNode{}
 		}
-		addToTrie(input[1:], node.one)
+		addToTree(input[1:], node.one)
 	}
 }
 
-func findMax(node *TrieNode) string {
+func findMax(node *TreeNode) string {
 	if node.leaf {
 		return ""
 	}
@@ -97,7 +97,7 @@ func findMax(node *TrieNode) string {
 	}
 }
 
-func findMin(node *TrieNode) string {
+func findMin(node *TreeNode) string {
 	if node.leaf {
 		return ""
 	}

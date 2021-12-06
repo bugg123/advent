@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/heap"
 	"fmt"
 	"strconv"
 	"strings"
@@ -44,40 +43,29 @@ func (p *PosHeap) Pop() interface{} {
 }
 
 func main() {
-	h := &PosHeap{}
-	posMap := make(map[int]map[int]*Pos)
-	heap.Init(h)
+	posMap := make(map[int]map[int]int)
 	for _, position := range positions {
 		for _, linePos := range getLine(position[0], position[1]) {
 			if posMap[linePos.x] == nil {
-				posMap[linePos.x] = make(map[int]*Pos)
+				posMap[linePos.x] = make(map[int]int)
 			}
-			if pos, ok := posMap[linePos.x][linePos.y]; ok {
-				
-				pos := &Pos{
-					x: linePos.x,
-					y: linePos.y,
-					danger: pos.danger+1,
-				}
-				posMap[linePos.x][linePos.y] = pos
-			} else {
-				pos := &Pos{
-					x: linePos.x,
-					y: linePos.y,
-					danger: 1,
-				}
-				h.Push(pos)
-				posMap[linePos.x][linePos.y] = pos
+			// if pos, ok := posMap[linePos.x][linePos.y]; ok {
+
+			posMap[linePos.x][linePos.y] += 1
+			// } else {
+			// 	posMap[linePos.x][linePos.y] = 1
+			// }
+		}
+	}
+	count := 0
+	for _, x := range posMap {
+		for _, y := range x {
+			if y > 1 {
+				count++
 			}
 		}
 	}
-	fmt.Printf("Len map: %d, Len heap: %d", len(posMap), h.Len())
-	for i := 0; i < h.Len(); i++ {
-		pos := h.Pop()
-		if pos.(*Pos).danger != 1 {
-			fmt.Println("omg")
-		}
-	}
+	fmt.Println(count)
 }
 
 func init() {
@@ -97,21 +85,26 @@ func getLine(a, b Pos) []Pos {
 	if a.x == b.x {
 		for i := min(a.y, b.y); i <= max(a.y, b.y); i++ {
 			res = append(res, Pos{
-				x:      a.x,
-				y:      i,
-				danger: 0,
+				x: a.x,
+				y: i,
 			})
 		}
 	} else if a.y == b.y {
 		for i := min(a.x, b.x); i <= max(a.x, b.x); i++ {
 			res = append(res, Pos{
-				x:      i,
-				y:      a.y,
-				danger: 0,
+				x: i,
+				y: a.y,
 			})
 		}
 	} else {
-		//Will do diagonal lines
+		xDir, yDir := getDiagDir(a, b)
+		for i, j := a.x, a.y; i != b.x; i, j = i+xDir, j+yDir {
+			res = append(res, Pos{
+				x: i,
+				y: j,
+			})
+		}
+		res = append(res, b)
 	}
 	return res
 }
@@ -128,6 +121,21 @@ func min(a, b int) int {
 		return a
 	}
 	return b
+}
+
+func getDiagDir(a, b Pos) (int, int) {
+	return getDir(a.x, b.x), getDir(a.y, b.y)
+}
+
+func getDir(a, b int) int {
+	if a < b {
+		return 1
+	} else if a > b {
+		return -1
+	} else {
+		panic("No straight lines here")
+	}
+
 }
 
 func convertCommaStringToPos(s string) Pos {

@@ -29,18 +29,15 @@ func main() {
 		curGuess += dir
 		curGas = nextGas
 		nextGas = getGasNeeded(curInputs, curGuess+dir)
-	fmt.Printf("Cur: %d, Next: %d, Dir: %d\n", curGas, nextGas, dir)
+		fmt.Printf("Cur: %d, Next: %d, Dir: %d\n", curGas, nextGas, dir)
 	}
 	fmt.Println("Gas guess: ", curGas)
 
 }
 
 func getFuelNeeded(a, b int) int {
-	fuelNeeded := 0
-	for i := 1; i <= getAbs(b-a); i++ {
-		fuelNeeded += i
-	}
-	return fuelNeeded
+	dist := getAbs(a - b)
+	return dist * (dist + 1) / 2
 }
 
 func getGasNeeded(subs []int, desiredPos int) int {

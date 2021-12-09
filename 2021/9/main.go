@@ -29,10 +29,10 @@ func main() {
 	fmt.Printf("Total: %d\n", res)
 }
 
-func countBasin(row, col int, model[][]int) int {
-if row < 0 || row >= len(model) || col < 0 || col >= len(model[row]) {
-	return 0
-}
+func countBasin(row, col int, model [][]int) int {
+	if row < 0 || row >= len(model) || col < 0 || col >= len(model[row]) {
+		return 0
+	}
 	if model[row][col] == 9 {
 		return 0
 	}
@@ -59,9 +59,9 @@ func isRiskArea(row, col int, model [][]int) bool {
 
 type IntHeap []int
 
-func (h IntHeap) Len() int	{ return len(h) }
+func (h IntHeap) Len() int           { return len(h) }
 func (h IntHeap) Less(i, j int) bool { return h[i] > h[j] }
-func (h IntHeap) Swap(i, j int) { h[i], h[j] = h[j], h[i] }
+func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 
 func (h *IntHeap) Push(x interface{}) {
 	*h = append(*h, x.(int))
